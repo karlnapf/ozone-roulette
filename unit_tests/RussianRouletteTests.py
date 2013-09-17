@@ -8,9 +8,8 @@ Written (W) 2013 Heiko Strathmann
 """
 from matplotlib.pyplot import plot, legend, show, clf
 from numpy.linalg.linalg import norm
-from numpy.ma.core import mean, zeros, arange, cumsum, ones
+from numpy.ma.core import mean, zeros, arange, cumsum, ones, exp
 from numpy.random import randn
-from numpy.oldnumeric.ma import exp
 from russian_roulette.RussianRoulette import RussianRoulette
 from russian_roulette.RussianRouletteSubSampling import \
     RussianRouletteSubSampling
