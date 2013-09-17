@@ -1,0 +1,136 @@
+"""
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
+
+Written (W) 2013 Heiko Strathmann
+"""
+from main.distribution.Distribution import Distribution
+from numpy.ma.core import shape, log
+from os.path import expanduser
+from scikits.sparse.cholmod import cholesky
+from scipy.constants.constants import pi
+from scipy.io.matlab.mio import loadmat
+from scipy.sparse.construct import eye
+from scipy.sparse.csc import csc_matrix
+from shogun.Mathematics import DirectSparseLinearSolver, \
+    RealSparseMatrixOperator
+from shogun.Statistics import Statistics
+import os
+
+
+class OzonePosterior(Distribution):
+    def __init__(self, prior=None):
+        Distribution.__init__(self, dimension=2)
+        
+        self.prior = prior
+        
+    @staticmethod
+    def log_det_exact(Q):
+#        d = cholesky(csc_matrix(Q)).L().diagonal()
+#        return 2 * sum(log(d))
+        return Statistics.log_det(csc_matrix(Q))
+    
+    @staticmethod
+    def solve_sparse_linear_system(A, b):
+        solver = DirectSparseLinearSolver()
+        operator = RealSparseMatrixOperator(csc_matrix(A))
+        return solver.solve(operator, b)
+        factor = cholesky(A)
+        result = factor.solve_A(b)
+        return result
+    
+    """@staticmethod
+    def log_det_estimate_shogun(Q):
+        from shogun.Mathematics import LogDetEstimator
+        from shogun.Mathematics import ProbingSampler
+        from shogun.Library import SerialComputationEngine
+        from shogun.Mathematics import LogRationalApproximationCGM
+        from shogun.Mathematics import RealSparseMatrixOperator
+        from shogun.Mathematics import LanczosEigenSolver
+        from shogun.Mathematics import CCGMShiftedFamilySolver
+        
+        op=RealSparseMatrixOperator(csc_matrix(Q))
+        engine=SerialComputationEngine()
+        linear_solver=CCGMShiftedFamilySolver()
+        accuracy=1e-8
+        eigen_solver=LanczosEigenSolver(op)
+        eigen_solver.compute()
+        op_func=LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
+        
+        trace_sampler=ProbingSampler(op)
+        log_det_estimator=LogDetEstimator(trace_sampler, op_func, engine)
+        n_estimates=10
+        estimates=log_det_estimator.sample(n_estimates)
+        return mean(estimates)"""
+        
+    @staticmethod
+    def get_data_folder():
+        home = expanduser("~")
+        return os.sep.join([home, "data", "ozone"]) + os.sep
+    
+    def create_Q_matrix(self, kappa):
+        folder = OzonePosterior.get_data_folder()
+        
+        GiCG = loadmat(folder + "GiCG.mat")["GiCG"]
+        G = loadmat(folder + "G.mat")["G"]
+        C0 = loadmat(folder + "C0.mat")["C0"]
+        
+        Q = GiCG + 2 * (kappa ** 2) * G + (kappa ** 4) * C0
+        return Q + eye(Q.shape[0], Q.shape[1]) * 1e-10
+    
+    @staticmethod
+    def log_det_method(Q):
+        return OzonePosterior.log_det_exact(Q)
+        # return OzonePosterior.log_det_estimate_shogun(Q)
+    
+    @staticmethod
+    def load_ozone_data():
+        folder = OzonePosterior.get_data_folder()
+        
+        y = loadmat(folder + "y.mat")["y"][:, 0]
+        assert(len(shape(y)) == 1)
+        
+        A = loadmat(folder + "A.mat")["A"]
+        
+        return y, A
+            
+    def log_pdf(self, X):
+        assert(shape(X)[0] == 1)
+        result = self.log_likelihood(2 ** X[0, 0], 2 ** X[0, 1])
+        
+        if self.prior is not None:
+            result += self.prior.log_pdf(X)
+        
+        return  result
+               
+    def log_likelihood(self, tau, kappa):
+        y, A = OzonePosterior.load_ozone_data()
+        AtA = A.T.dot(A)
+        
+        Q = self.create_Q_matrix(kappa);
+        n = len(y);
+        M = Q + tau * AtA;
+        
+        logdet1 = OzonePosterior.log_det_method(Q)
+        
+        logdet2 = OzonePosterior.log_det_method(M)
+        
+        first = 0.5 * logdet1 + 0.5 * n * log(tau) - 0.5 * logdet2
+        
+        second_a = -0.5 * tau * (y.T.dot(y))
+        
+        second_b = A.T.dot(y)
+        second_b = OzonePosterior.solve_sparse_linear_system(M, second_b)
+        second_b = A.dot(second_b)
+        second_b = y.T.dot(second_b)
+        second_b = 0.5 * (tau ** 2) * second_b
+        
+        log_det_part = first
+        quadratic_part = second_a + second_b
+        const_part = -0.5 * n * log(2 * pi)
+        
+        log_marignal_lik = const_part + log_det_part + quadratic_part
+        
+        return log_marignal_lik
