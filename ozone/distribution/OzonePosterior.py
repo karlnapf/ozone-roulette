@@ -9,7 +9,7 @@ Written (W) 2013 Heiko Strathmann
 from main.distribution.Distribution import Distribution
 from numpy.ma.core import shape, log, mean
 from os.path import expanduser
-from scikits.sparse.cholmod import cholesky
+#from scikits.sparse.cholmod import cholesky
 from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
@@ -21,8 +21,8 @@ import os
 
 
 class OzonePosterior(Distribution):
-    def __init__(self, prior=None, logdet_method="scikits",
-                 solve_method="scikits"):
+    def __init__(self, prior=None, logdet_method="shogun_exact",
+                 solve_method="shogun"):
         Distribution.__init__(self, dimension=2)
         
         self.prior = prior
@@ -35,8 +35,9 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_scikits(Q):
-        d = cholesky(csc_matrix(Q)).L().diagonal()
-        return 2 * sum(log(d))
+#        d = cholesky(csc_matrix(Q)).L().diagonal()
+#        return 2 * sum(log(d))
+        raise Exception("cholmod not installed")
     
     @staticmethod
     def solve_sparse_linear_system_shogun(A, b):
@@ -46,31 +47,33 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def solve_sparse_linear_system_scikits(A, b):
-        factor = cholesky(A)
-        result = factor.solve_A(b)
-        return result
+#        factor = cholesky(A)
+#        result = factor.solve_A(b)
+#        return result
+        raise Exception("cholmod not installed")
     
     @staticmethod
     def log_det_estimate_shogun(Q):
-        from shogun.Mathematics import LogDetEstimator
-        from shogun.Mathematics import ProbingSampler
-        from shogun.Library import SerialComputationEngine
-        from shogun.Mathematics import LogRationalApproximationCGM
-        from shogun.Mathematics import RealSparseMatrixOperator
-        from shogun.Mathematics import LanczosEigenSolver
-        from shogun.Mathematics import CCGMShiftedFamilySolver
+        from modshogun import LogDetEstimator
+        from modshogun import ProbingSampler
+        from modshogun import SerialComputationEngine
+        from modshogun import LogRationalApproximationCGM
+        from modshogun import RealSparseMatrixOperator
+        from modshogun import LanczosEigenSolver
+        from modshogun import CGMShiftedFamilySolver
         
         op = RealSparseMatrixOperator(csc_matrix(Q))
         engine = SerialComputationEngine()
-        linear_solver = CCGMShiftedFamilySolver()
-        accuracy = 1e-8
+        linear_solver = CGMShiftedFamilySolver()
+        accuracy = 1e-5
         eigen_solver = LanczosEigenSolver(op)
+        eigen_solver.set_min_eigenvalue(1e-10)
         eigen_solver.compute()
         op_func = LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
         
         trace_sampler = ProbingSampler(op)
         log_det_estimator = LogDetEstimator(trace_sampler, op_func, engine)
-        n_estimates = 10
+        n_estimates = 1
         estimates = log_det_estimator.sample(n_estimates)
         return mean(estimates)
         
