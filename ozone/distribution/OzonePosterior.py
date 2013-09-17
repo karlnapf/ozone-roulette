@@ -93,19 +93,19 @@ class OzonePosterior(Distribution):
         return Q + eye(Q.shape[0], Q.shape[1]) * 1e-10
     
     def log_det_method(self, Q):
-        if self.logdet_method is "scikits":
+        if self.logdet_method == "scikits":
             return OzonePosterior.log_det_scikits(Q)
-        elif self.logdet_method is "shogun_estimate":
+        elif self.logdet_method == "shogun_estimate":
             return OzonePosterior.log_det_estimate_shogun(Q)
-        elif self.logdet_method is "shogun_exact":
+        elif self.logdet_method == "shogun_exact":
             return OzonePosterior.log_det_shogun_exact(Q)
         else:
             raise ValueError("Log-det method unknown")
         
     def solve_sparse_linear_system(self, A, b):
-        if self.solve_method is "scikits":
+        if self.solve_method == "scikits":
             return OzonePosterior.solve_sparse_linear_system_scikits(A, b)
-        elif self.solve_method is "shogun":
+        elif self.solve_method == "shogun":
             return OzonePosterior.solve_sparse_linear_system_shogun(A, b)
         else:
             raise ValueError("Solve method method unknown")
