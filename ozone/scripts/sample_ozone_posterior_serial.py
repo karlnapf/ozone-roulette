@@ -17,7 +17,7 @@ from main.mcmc.output.StoreChainOutput import StoreChainOutput
 from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
-from ozone.distribution.OzonePosteriorRRCluster import OzonePosteriorRRCluster
+from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRouletteSubSampling import \
     RussianRouletteSubSampling
@@ -30,7 +30,7 @@ def main():
     num_estimates = 1
     
     computation_engine = SerialComputationEngine()
-    posterior = OzonePosteriorRRCluster(computation_engine=computation_engine,
+    posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
                                         rr_instance=rr_instance,
                                         num_estimates=num_estimates,
                                         prior=prior)

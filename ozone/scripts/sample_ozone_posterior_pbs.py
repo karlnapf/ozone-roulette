@@ -18,7 +18,7 @@ from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
 from os.path import expanduser
-from ozone.distribution.OzonePosteriorRRCluster import OzonePosteriorRRCluster
+from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRouletteSubSampling import \
     RussianRouletteSubSampling
@@ -35,7 +35,7 @@ def main():
     pbs_parameters = PBSParameters(foldername=folder)
         
     computation_engine = PBSComputationEngine(pbs_parameters, check_interval=10)
-    posterior = OzonePosteriorRRCluster(computation_engine=computation_engine,
+    posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
                                         rr_instance=rr_instance,
                                         num_estimates=num_estimates,
                                         prior=prior)

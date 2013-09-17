@@ -11,7 +11,7 @@ from numpy.ma.core import asarray
 from ozone.distribution.OzonePosteriorRR import OzonePosteriorRR
 from ozone.jobs.OzoneLikelihoodJob import OzoneLikelihoodJob
 
-class OzonePosteriorRRCluster(OzonePosteriorRR):
+class OzonePosteriorRREngine(OzonePosteriorRR):
     def __init__(self, computation_engine, rr_instance, num_estimates, prior):
         OzonePosteriorRR.__init__(self, rr_instance, num_estimates, prior)
         

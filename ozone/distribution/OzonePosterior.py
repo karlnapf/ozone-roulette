@@ -102,7 +102,7 @@ class OzonePosterior(Distribution):
     def solve_sparse_linear_system(self, A, b):
         if self.solve_method is "scikits":
             return OzonePosterior.solve_sparse_linear_system_scikits(A, b)
-        elif self.logdet_method is "shogun":
+        elif self.solve_method is "shogun":
             return OzonePosterior.solve_sparse_linear_system_shogun(A, b)
         else:
             raise ValueError("Solve method method unknown")

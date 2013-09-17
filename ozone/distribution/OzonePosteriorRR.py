@@ -19,8 +19,8 @@ class OzonePosteriorRR(OzonePosterior):
     def log_likelihood(self, tau, kappa):
         estimates = self.precompute_likelihood_estimates(tau, kappa)
         if var(estimates) > 0:
-            rr_fied = self.rr_instance.exponential(estimates)
-            return rr_fied
+            rr_ified = self.rr_instance.exponential(estimates)
+            return rr_ified
         else:
             return mean(estimates)
     
