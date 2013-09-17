@@ -3,7 +3,12 @@ ozone-roulette
 
 Implementation of Russian Roulette for a GMRF on ozone data.
 
-Dependencies (Need to be in PYTHONPATH):
+Dependencies 
+
+Data:
+Ozone data has to be in $HOME/data/ozone/ - ask author if you need it
+
+Python libraries: (Need to be in PYTHONPATH):
 https://github.com/karlnapf/kameleon-mcmc
 https://github.com/karlnapf/independent-jobs
 

@@ -7,7 +7,7 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 from main.distribution.Distribution import Distribution
-from numpy.ma.core import shape, log
+from numpy.ma.core import shape, log, mean
 from os.path import expanduser
 from scikits.sparse.cholmod import cholesky
 from scipy.constants.constants import pi
@@ -21,27 +21,36 @@ import os
 
 
 class OzonePosterior(Distribution):
-    def __init__(self, prior=None):
+    def __init__(self, prior=None, logdet_method="scikits",
+                 solve_method="scikits"):
         Distribution.__init__(self, dimension=2)
         
         self.prior = prior
+        self.logdet_method = logdet_method
+        self.solve_method = solve_method
         
     @staticmethod
-    def log_det_exact(Q):
-#        d = cholesky(csc_matrix(Q)).L().diagonal()
-#        return 2 * sum(log(d))
+    def log_det_shogun_exact(Q):
         return Statistics.log_det(csc_matrix(Q))
     
     @staticmethod
-    def solve_sparse_linear_system(A, b):
+    def log_det_scikits(Q):
+        d = cholesky(csc_matrix(Q)).L().diagonal()
+        return 2 * sum(log(d))
+    
+    @staticmethod
+    def solve_sparse_linear_system_shogun(A, b):
         solver = DirectSparseLinearSolver()
         operator = RealSparseMatrixOperator(csc_matrix(A))
         return solver.solve(operator, b)
+    
+    @staticmethod
+    def solve_sparse_linear_system_scikits(A, b):
         factor = cholesky(A)
         result = factor.solve_A(b)
         return result
     
-    """@staticmethod
+    @staticmethod
     def log_det_estimate_shogun(Q):
         from shogun.Mathematics import LogDetEstimator
         from shogun.Mathematics import ProbingSampler
@@ -51,19 +60,19 @@ class OzonePosterior(Distribution):
         from shogun.Mathematics import LanczosEigenSolver
         from shogun.Mathematics import CCGMShiftedFamilySolver
         
-        op=RealSparseMatrixOperator(csc_matrix(Q))
-        engine=SerialComputationEngine()
-        linear_solver=CCGMShiftedFamilySolver()
-        accuracy=1e-8
-        eigen_solver=LanczosEigenSolver(op)
+        op = RealSparseMatrixOperator(csc_matrix(Q))
+        engine = SerialComputationEngine()
+        linear_solver = CCGMShiftedFamilySolver()
+        accuracy = 1e-8
+        eigen_solver = LanczosEigenSolver(op)
         eigen_solver.compute()
-        op_func=LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
+        op_func = LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
         
-        trace_sampler=ProbingSampler(op)
-        log_det_estimator=LogDetEstimator(trace_sampler, op_func, engine)
-        n_estimates=10
-        estimates=log_det_estimator.sample(n_estimates)
-        return mean(estimates)"""
+        trace_sampler = ProbingSampler(op)
+        log_det_estimator = LogDetEstimator(trace_sampler, op_func, engine)
+        n_estimates = 10
+        estimates = log_det_estimator.sample(n_estimates)
+        return mean(estimates)
         
     @staticmethod
     def get_data_folder():
@@ -80,11 +89,24 @@ class OzonePosterior(Distribution):
         Q = GiCG + 2 * (kappa ** 2) * G + (kappa ** 4) * C0
         return Q + eye(Q.shape[0], Q.shape[1]) * 1e-10
     
-    @staticmethod
-    def log_det_method(Q):
-        return OzonePosterior.log_det_exact(Q)
-        # return OzonePosterior.log_det_estimate_shogun(Q)
-    
+    def log_det_method(self, Q):
+        if self.logdet_method is "scikits":
+            return OzonePosterior.log_det_scikits(Q)
+        elif self.logdet_method is "shogun_estimate":
+            return OzonePosterior.log_det_estimate_shogun(Q)
+        elif self.logdet_method is "shogun_exact":
+            return OzonePosterior.log_det_shogun_exact(Q)
+        else:
+            raise ValueError("Log-det method unknown")
+        
+    def solve_sparse_linear_system(self, A, b):
+        if self.solve_method is "scikits":
+            return OzonePosterior.solve_sparse_linear_system_scikits(A, b)
+        elif self.logdet_method is "shogun":
+            return OzonePosterior.solve_sparse_linear_system_shogun(A, b)
+        else:
+            raise ValueError("Solve method method unknown")
+        
     @staticmethod
     def load_ozone_data():
         folder = OzonePosterior.get_data_folder()
@@ -113,16 +135,15 @@ class OzonePosterior(Distribution):
         n = len(y);
         M = Q + tau * AtA;
         
-        logdet1 = OzonePosterior.log_det_method(Q)
-        
-        logdet2 = OzonePosterior.log_det_method(M)
+        logdet1 = self.log_det_method(Q)
+        logdet2 = self.log_det_method(M)
         
         first = 0.5 * logdet1 + 0.5 * n * log(tau) - 0.5 * logdet2
         
         second_a = -0.5 * tau * (y.T.dot(y))
         
         second_b = A.T.dot(y)
-        second_b = OzonePosterior.solve_sparse_linear_system(M, second_b)
+        second_b = self.solve_sparse_linear_system(M, second_b)
         second_b = A.dot(second_b)
         second_b = y.T.dot(second_b)
         second_b = 0.5 * (tau ** 2) * second_b
