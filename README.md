@@ -9,7 +9,9 @@ https://github.com/karlnapf/independent-jobs
 
 For estimating log-determinants:
 Shogun Machine Learning Toolbox - http://shogun-toolbox.org/
-Needs to be compiled with the logdet framework, which depends on eigen3, lapack, and colpack
+Needs to be compiled with:
+logdet framework, which depends on eigen3, lapack, and colpack
+python_modular language bindings, which depend on python and numpy
 
 For sparse Cholesky (can be done with Shogun):
 Python's sparse cholmod package - http://pythonhosted.org/scikits.sparse/cholmod.html
