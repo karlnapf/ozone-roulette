@@ -36,7 +36,8 @@ def main():
     
     home = expanduser("~")
     folder = os.sep.join([home, "ozone_initial_test"])
-    pbs_parameters = BatchClusterParameters(foldername=folder)
+    pbs_parameters = BatchClusterParameters(foldername=folder,
+                                            loglevel=logging.DEBUG)
         
     computation_engine = SGEComputationEngine(pbs_parameters, check_interval=10)
     posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
