@@ -10,7 +10,7 @@ from aggregators.ScalarResultAggregator import ScalarResultAggregator
 from engines.SGEComputationEngine import SGEComputationEngine
 from engines.SerialComputationEngine import SerialComputationEngine
 from jobs.DummyJob import DummyJob
-from jobs.PBSParameters import PBSParameters
+from jobs.BatchClusterParameters import BatchClusterParameters
 from numpy.random import randint
 from os.path import expanduser
 from ozone.jobs.ShogunJobImportLogdet import ShogunJobImportLogdet
@@ -67,7 +67,7 @@ class ShogunTestsSGE(unittest.TestCase):
             shutil.rmtree(folder)
         except OSError:
             pass
-        pbs_parameters = PBSParameters(foldername=folder)
+        pbs_parameters = BatchClusterParameters(foldername=folder)
         engine = SGEComputationEngine(pbs_parameters, check_interval=1)
         num_submissions = 1
         sleep_times = randint(0, 3, num_submissions)

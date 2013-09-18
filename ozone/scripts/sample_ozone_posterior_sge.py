@@ -8,7 +8,7 @@ Written (W) 2013 Heiko Strathmann
 """
 
 from engines.SGEComputationEngine import SGEComputationEngine
-from jobs.PBSParameters import PBSParameters
+from jobs.BatchClusterParameters import BatchClusterParameters
 from main.distribution.Gaussian import Gaussian
 from main.mcmc.MCMCChain import MCMCChain
 from main.mcmc.MCMCParams import MCMCParams
@@ -36,7 +36,7 @@ def main():
     
     home = expanduser("~")
     folder = os.sep.join([home, "ozone_initial_test"])
-    pbs_parameters = PBSParameters(foldername=folder)
+    pbs_parameters = BatchClusterParameters(foldername=folder)
         
     computation_engine = SGEComputationEngine(pbs_parameters, check_interval=10)
     posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
