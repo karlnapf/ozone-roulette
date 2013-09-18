@@ -14,7 +14,9 @@ class OzoneLikelihoodJob(IndependentJob):
     def __init__(self, aggregator, ozone_posterior, tau, kappa):
         IndependentJob.__init__(self, aggregator)
         
-        self.ozone_posterior = OzonePosterior(ozone_posterior.prior)
+        self.ozone_posterior = OzonePosterior(ozone_posterior.prior,
+                                              ozone_posterior.logdet_method,
+                                              ozone_posterior.solve_method)
         self.tau = tau
         self.kappa = kappa
     
