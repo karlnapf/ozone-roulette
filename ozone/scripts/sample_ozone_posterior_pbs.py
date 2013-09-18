@@ -59,9 +59,9 @@ def main():
     
     loaded = store_chain_output.load_last_stored_chain()
     if loaded is None:
-        Log.info("Running chain from scratch")
+        logging.info("Running chain from scratch")
     else:
-        Log.info("Running chain from iteration %d" % loaded.iteration)
+        logging.info("Running chain from iteration %d" % loaded.iteration)
         chain = loaded
         
     chain.run()
