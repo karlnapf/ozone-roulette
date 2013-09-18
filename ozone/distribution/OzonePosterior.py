@@ -9,14 +9,21 @@ Written (W) 2013 Heiko Strathmann
 from main.distribution.Distribution import Distribution
 from numpy.ma.core import shape, log, mean
 from os.path import expanduser
-#from scikits.sparse.cholmod import cholesky
+# from scikits.sparse.cholmod import cholesky
 from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
-from shogun.Mathematics import DirectSparseLinearSolver, \
-    RealSparseMatrixOperator
-from shogun.Statistics import Statistics
+from modshogun import DirectSparseLinearSolver
+from modshogun import RealSparseMatrixOperator
+from modshogun import Statistics
+from modshogun import CGMShiftedFamilySolver
+from modshogun import LanczosEigenSolver
+from modshogun import LogDetEstimator
+from modshogun import LogRationalApproximationCGM
+from modshogun import ProbingSampler
+from modshogun import RealSparseMatrixOperator
+from modshogun import SerialComputationEngine
 import os
 
 
@@ -60,14 +67,6 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_estimate_shogun(Q):
-        from modshogun import LogDetEstimator
-        from modshogun import ProbingSampler
-        from modshogun import SerialComputationEngine
-        from modshogun import LogRationalApproximationCGM
-        from modshogun import RealSparseMatrixOperator
-        from modshogun import LanczosEigenSolver
-        from modshogun import CGMShiftedFamilySolver
-        
         op = RealSparseMatrixOperator(csc_matrix(Q))
         engine = SerialComputationEngine()
         linear_solver = CGMShiftedFamilySolver()
