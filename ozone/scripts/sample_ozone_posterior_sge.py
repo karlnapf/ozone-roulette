@@ -22,9 +22,13 @@ from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRouletteSubSampling import \
     RussianRouletteSubSampling
+import logging
 import os
 
 def main():
+    logging.basicConfig(format='%(levelname)s: %(asctime)s: %(module)s.%(funcName)s() \"%(message)s\"',
+                        level=logging.INFO)
+    
     prior = Gaussian(Sigma=eye(2) * 100)
     rr_instance = RussianRouletteSubSampling(threshold=1e-5, block_size=1,
                                              num_desired_estimates=None)

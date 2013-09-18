@@ -21,9 +21,13 @@ from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRouletteSubSampling import \
     RussianRouletteSubSampling
+import logging
 import os
 
 def main():
+    logging.basicConfig(format='%(levelname)s: %(asctime)s: %(module)s.%(funcName)s() \"%(message)s\"',
+                        level=logging.INFO)
+    
     prior = Gaussian(Sigma=eye(2) * 100)
     rr_instance = RussianRouletteSubSampling(threshold=1e-5, block_size=1,
                                              num_desired_estimates=None)
@@ -51,9 +55,9 @@ def main():
     
     loaded = store_chain_output.load_last_stored_chain()
     if loaded is None:
-        print "Running chain from scratch"
+        logging.info("Running chain from scratch")
     else:
-        print "Running chain from iteration", loaded.iteration
+        logging.info("Running chain from iteration %d" % loaded.iteration)
         chain = loaded
         
     chain.run()

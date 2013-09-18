@@ -7,24 +7,19 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 from main.distribution.Distribution import Distribution
+from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
+    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
+    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
+    Statistics
 from numpy.ma.core import shape, log, mean
 from os.path import expanduser
-# from scikits.sparse.cholmod import cholesky
 from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
-from modshogun import DirectSparseLinearSolver
-from modshogun import RealSparseMatrixOperator
-from modshogun import Statistics
-from modshogun import CGMShiftedFamilySolver
-from modshogun import LanczosEigenSolver
-from modshogun import LogDetEstimator
-from modshogun import LogRationalApproximationCGM
-from modshogun import ProbingSampler
-from modshogun import RealSparseMatrixOperator
-from modshogun import SerialComputationEngine
+import logging
 import os
+# from scikits.sparse.cholmod import cholesky
 
 
 class OzonePosterior(Distribution):
@@ -44,7 +39,10 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_shogun_exact(Q):
-        return Statistics.log_det(csc_matrix(Q))
+        logging.debug("Entering")
+        logdet = Statistics.log_det(csc_matrix(Q))
+        logging.debug("Leaving")
+        return logdet
     
     @staticmethod
     def log_det_scikits(Q):
@@ -54,9 +52,12 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def solve_sparse_linear_system_shogun(A, b):
+        logging.debug("Entering")
         solver = DirectSparseLinearSolver()
         operator = RealSparseMatrixOperator(csc_matrix(A))
-        return solver.solve(operator, b)
+        result = solver.solve(operator, b)
+        logging.debug("Leaving")
+        return result
     
     @staticmethod
     def solve_sparse_linear_system_scikits(A, b):
@@ -67,6 +68,7 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_estimate_shogun(Q):
+        logging.debug("Entering")
         op = RealSparseMatrixOperator(csc_matrix(Q))
         engine = SerialComputationEngine()
         linear_solver = CGMShiftedFamilySolver()
@@ -80,6 +82,8 @@ class OzonePosterior(Distribution):
         log_det_estimator = LogDetEstimator(trace_sampler, op_func, engine)
         n_estimates = 1
         estimates = log_det_estimator.sample(n_estimates)
+        
+        logging.debug("Leaving")
         return mean(estimates)
         
     @staticmethod
@@ -127,15 +131,18 @@ class OzonePosterior(Distribution):
         return y, A
             
     def log_pdf(self, X):
+        logging.debug("Entering")
         assert(shape(X)[0] == 1)
         result = self.log_likelihood(2 ** X[0, 0], 2 ** X[0, 1])
         
         if self.prior is not None:
             result += self.prior.log_pdf(X)
         
+        logging.debug("Leaving")
         return  result
                
     def log_likelihood(self, tau, kappa):
+        logging.debug("Entering")
         y, A = OzonePosterior.load_ozone_data()
         AtA = A.T.dot(A)
         
@@ -143,6 +150,7 @@ class OzonePosterior(Distribution):
         n = len(y);
         M = Q + tau * AtA;
         
+        logging.info("Computing log-determinants")
         logdet1 = self.log_det_method(Q)
         logdet2 = self.log_det_method(M)
         
@@ -150,6 +158,7 @@ class OzonePosterior(Distribution):
         
         second_a = -0.5 * tau * (y.T.dot(y))
         
+        logging.info("Computing rest of likelihood")
         second_b = A.T.dot(y)
         second_b = self.solve_sparse_linear_system(M, second_b)
         second_b = A.dot(second_b)
@@ -162,4 +171,5 @@ class OzonePosterior(Distribution):
         
         log_marignal_lik = const_part + log_det_part + quadratic_part
         
+        logging.debug("Leaving")
         return log_marignal_lik
