@@ -29,6 +29,12 @@ class OzonePosterior(Distribution):
         self.logdet_method = logdet_method
         self.solve_method = solve_method
         
+    def set_log_det_method(self, logdet_method):
+        self.logdet_method = logdet_method    
+        
+    def set_solve_method(self, solve_method):
+        self.solve_method = solve_method    
+    
     @staticmethod
     def log_det_shogun_exact(Q):
         return Statistics.log_det(csc_matrix(Q))
