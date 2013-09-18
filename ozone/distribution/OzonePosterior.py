@@ -17,7 +17,7 @@ from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
-import logging
+from tools.Log import Log
 import os
 # from scikits.sparse.cholmod import cholesky
 
@@ -39,9 +39,9 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_shogun_exact(Q):
-        logging.debug("Entering")
+        Log.debug("Entering")
         logdet = Statistics.log_det(csc_matrix(Q))
-        logging.debug("Leaving")
+        Log.debug("Leaving")
         return logdet
     
     @staticmethod
@@ -52,11 +52,11 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def solve_sparse_linear_system_shogun(A, b):
-        logging.debug("Entering")
+        Log.debug("Entering")
         solver = DirectSparseLinearSolver()
         operator = RealSparseMatrixOperator(csc_matrix(A))
         result = solver.solve(operator, b)
-        logging.debug("Leaving")
+        Log.debug("Leaving")
         return result
     
     @staticmethod
@@ -68,7 +68,7 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_estimate_shogun(Q):
-        logging.debug("Entering")
+        Log.debug("Entering")
         op = RealSparseMatrixOperator(csc_matrix(Q))
         engine = SerialComputationEngine()
         linear_solver = CGMShiftedFamilySolver()
@@ -83,7 +83,7 @@ class OzonePosterior(Distribution):
         n_estimates = 1
         estimates = log_det_estimator.sample(n_estimates)
         
-        logging.debug("Leaving")
+        Log.debug("Leaving")
         return mean(estimates)
         
     @staticmethod
@@ -131,18 +131,18 @@ class OzonePosterior(Distribution):
         return y, A
             
     def log_pdf(self, X):
-        logging.debug("Entering")
+        Log.debug("Entering")
         assert(shape(X)[0] == 1)
         result = self.log_likelihood(2 ** X[0, 0], 2 ** X[0, 1])
         
         if self.prior is not None:
             result += self.prior.log_pdf(X)
         
-        logging.debug("Leaving")
+        Log.debug("Leaving")
         return  result
                
     def log_likelihood(self, tau, kappa):
-        logging.debug("Entering")
+        Log.debug("Entering")
         y, A = OzonePosterior.load_ozone_data()
         AtA = A.T.dot(A)
         
@@ -150,7 +150,7 @@ class OzonePosterior(Distribution):
         n = len(y);
         M = Q + tau * AtA;
         
-        logging.info("Computing log-determinants")
+        Log.info("Computing log-determinants")
         logdet1 = self.log_det_method(Q)
         logdet2 = self.log_det_method(M)
         
@@ -158,7 +158,7 @@ class OzonePosterior(Distribution):
         
         second_a = -0.5 * tau * (y.T.dot(y))
         
-        logging.info("Computing rest of likelihood")
+        Log.info("Computing rest of likelihood")
         second_b = A.T.dot(y)
         second_b = self.solve_sparse_linear_system(M, second_b)
         second_b = A.dot(second_b)
@@ -171,5 +171,5 @@ class OzonePosterior(Distribution):
         
         log_marignal_lik = const_part + log_det_part + quadratic_part
         
-        logging.debug("Leaving")
+        Log.debug("Leaving")
         return log_marignal_lik
