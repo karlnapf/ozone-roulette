@@ -17,6 +17,7 @@ from main.mcmc.output.StoreChainOutput import StoreChainOutput
 from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
+from os.path import expanduser
 from ozone.distribution.OzonePosteriorAverageEngine import \
     OzonePosteriorAverageEngine
 from pickle import dump
@@ -46,7 +47,8 @@ def main():
     chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
-    folder = "test"
+    home = expanduser("~")
+    folder = os.sep.join([home, "sample_ozone_posterior_average_serial"])
     store_chain_output = StoreChainOutput(folder)
     chain.append_mcmc_output(store_chain_output)
     

@@ -8,6 +8,7 @@ Written (W) 2013 Heiko Strathmann
 """
 
 from engines.SerialComputationEngine import SerialComputationEngine
+from os.path import expanduser
 from main.distribution.Gaussian import Gaussian
 from main.mcmc.MCMCChain import MCMCChain
 from main.mcmc.MCMCParams import MCMCParams
@@ -29,6 +30,9 @@ import os
 def main():
     Log.set_loglevel(logging.DEBUG)
     
+    home = expanduser("~")
+    folder = os.sep.join([home, "sample_ozone_posterior_rr_serial"])
+    
     prior = Gaussian(Sigma=eye(2) * 100)
     num_estimates = 2
     
@@ -49,7 +53,6 @@ def main():
     chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
-    folder = "test"
     store_chain_output = StoreChainOutput(folder)
     chain.append_mcmc_output(store_chain_output)
     
