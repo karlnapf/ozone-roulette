@@ -32,7 +32,7 @@ def main():
     num_estimates = 5
     
     home = expanduser("~")
-    folder = os.sep.join([home, "ozone_initial_test"])
+    folder = os.sep.join([home, "sample_ozone_posterior_average_sge"])
     
     # cluster admin set project jump for me to exclusively allocate nodes
     parameter_prefix="#$ -P jump"

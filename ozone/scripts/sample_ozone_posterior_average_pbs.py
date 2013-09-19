@@ -32,7 +32,7 @@ def main():
     num_estimates = 5
     
     home = expanduser("~")
-    folder = os.sep.join([home, "ozone_initial_test"])
+    folder = os.sep.join([home, "sample_ozone_posterior_average_pbs"])
     cluster_parameters = BatchClusterParameters(foldername=folder,
                                             memory=4,
                                             loglevel=logging.DEBUG)
