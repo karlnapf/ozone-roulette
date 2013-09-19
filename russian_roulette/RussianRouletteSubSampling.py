@@ -7,8 +7,9 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 from numpy.ma.core import mean, zeros
-from numpy.random import  permutation
+from numpy.random import permutation
 from russian_roulette.RussianRoulette import RussianRoulette
+import logging
 
 class RussianRouletteSubSampling(RussianRoulette):
     def __init__(self, threshold, block_size, num_desired_estimates=None):
@@ -22,6 +23,8 @@ class RussianRouletteSubSampling(RussianRoulette):
         return RussianRoulette.exponential(self, subsampled)
     
     def subsample(self, estimates):
+        logging.info("Sub-sampling %d estimates to get %d group estimate of size %d" %
+                     (len(estimates), self.num_desired_estimates, self.block_size))
         assert(len(estimates) >= self.block_size)
         
         if self.num_desired_estimates is not None:
