@@ -12,8 +12,8 @@ from ozone.distribution.OzonePosteriorAverageEngine import \
 import logging
 
 class OzonePosteriorRREngine(OzonePosteriorAverageEngine):
-    def __init__(self, rr_instance, num_estimates, prior):
-        OzonePosteriorAverageEngine.__init__(self, num_estimates, prior)
+    def __init__(self, rr_instance, computation_engine, num_estimates, prior):
+        OzonePosteriorAverageEngine.__init__(self, computation_engine, num_estimates, prior)
         
         self.rr_instance = rr_instance
         
@@ -26,4 +26,5 @@ class OzonePosteriorRREngine(OzonePosteriorAverageEngine):
             rr_ified = self.rr_instance.exponential(estimates)
             return rr_ified
         else:
+            logging.warn("Russian Roulette on one estimate not possible. Returning the estimate")
             return mean(estimates)
