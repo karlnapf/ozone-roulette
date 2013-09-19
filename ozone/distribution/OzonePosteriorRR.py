@@ -6,15 +6,14 @@ the Free Software Foundation; either version 3 of the License, or
 
 Written (W) 2013 Heiko Strathmann
 """
-from numpy.ma.core import asarray, var, mean
-from ozone.distribution.OzonePosterior import OzonePosterior
+from numpy.ma.core import var, mean
+from ozone.distribution.OzonePosteriorAverage import OzonePosteriorAverage
 
-class OzonePosteriorRR(OzonePosterior):
+class OzonePosteriorRR(OzonePosteriorAverage):
     def __init__(self, rr_instance, num_estimates, prior):
-        OzonePosterior.__init__(self, prior)
+        OzonePosteriorAverage.__init__(self, num_estimates, prior)
         
         self.rr_instance = rr_instance
-        self.num_estimates = num_estimates
         
     def log_likelihood(self, tau, kappa):
         estimates = self.precompute_likelihood_estimates(tau, kappa)
@@ -23,7 +22,3 @@ class OzonePosteriorRR(OzonePosterior):
             return rr_ified
         else:
             return mean(estimates)
-    
-    def precompute_likelihood_estimates(self, tau, kappa):
-        estimates = asarray([OzonePosterior.log_likelihood(self, tau, kappa) for _ in range(self.num_estimates)])
-        return estimates

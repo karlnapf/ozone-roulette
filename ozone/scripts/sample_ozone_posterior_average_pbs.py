@@ -18,10 +18,9 @@ from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
 from os.path import expanduser
-from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
+from ozone.distribution.OzonePosteriorAverageEngine import \
+    OzonePosteriorAverageEngine
 from pickle import dump
-from russian_roulette.RussianRouletteSubSampling import \
-    RussianRouletteSubSampling
 from tools.Log import Log
 import logging
 import os
@@ -30,9 +29,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    rr_instance = RussianRouletteSubSampling(threshold=1e-5, block_size=1,
-                                             num_desired_estimates=None)
-    num_estimates = 1
+    num_estimates = 5
     
     home = expanduser("~")
     folder = os.sep.join([home, "ozone_initial_test"])
@@ -41,8 +38,7 @@ def main():
                                             loglevel=logging.DEBUG)
         
     computation_engine = PBSComputationEngine(cluster_parameters, check_interval=10)
-    posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
-                                        rr_instance=rr_instance,
+    posterior = OzonePosteriorAverageEngine(computation_engine=computation_engine,
                                         num_estimates=num_estimates,
                                         prior=prior)
     

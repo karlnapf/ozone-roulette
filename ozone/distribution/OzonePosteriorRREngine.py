@@ -6,28 +6,20 @@ the Free Software Foundation; either version 3 of the License, or
 
 Written (W) 2013 Heiko Strathmann
 """
-from aggregators.ScalarResultAggregator import ScalarResultAggregator
-from numpy.ma.core import asarray
-from ozone.distribution.OzonePosteriorRR import OzonePosteriorRR
-from ozone.jobs.OzoneLikelihoodJob import OzoneLikelihoodJob
+from numpy.ma.core import var, mean
+from ozone.distribution.OzonePosteriorAverageEngine import \
+    OzonePosteriorAverageEngine
 
-class OzonePosteriorRREngine(OzonePosteriorRR):
-    def __init__(self, computation_engine, rr_instance, num_estimates, prior):
-        OzonePosteriorRR.__init__(self, rr_instance, num_estimates, prior)
+class OzonePosteriorRREngine(OzonePosteriorAverageEngine):
+    def __init__(self, rr_instance, num_estimates, prior):
+        OzonePosteriorAverageEngine.__init__(self, num_estimates, prior)
         
-        self.computation_engine = computation_engine
+        self.rr_instance = rr_instance
         
-    def precompute_likelihood_estimates(self, tau, kappa):
-        aggregators = []
-        for _ in range(self.num_estimates):
-            job = OzoneLikelihoodJob(ScalarResultAggregator(), self, tau, kappa)
-            aggregators.append(self.computation_engine.submit_job(job))
-        
-        self.computation_engine.wait_for_all()
-        
-        results = []
-        for i in range(self.num_estimates):
-            aggregators[i].finalize()
-            results.append(aggregators[i].get_final_result().result)
-            
-        return asarray(results)
+    def log_likelihood(self, tau, kappa):
+        estimates = self.precompute_likelihood_estimates(tau, kappa)
+        if var(estimates) > 0:
+            rr_ified = self.rr_instance.exponential(estimates)
+            return rr_ified
+        else:
+            return mean(estimates)

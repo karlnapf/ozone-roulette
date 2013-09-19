@@ -7,42 +7,32 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 
-from engines.BatchClusterParameters import BatchClusterParameters
-from engines.SGEComputationEngine import SGEComputationEngine
+from engines.SerialComputationEngine import SerialComputationEngine
 from main.distribution.Gaussian import Gaussian
 from main.mcmc.MCMCChain import MCMCChain
 from main.mcmc.MCMCParams import MCMCParams
+from main.mcmc.output.PlottingOutput import PlottingOutput
 from main.mcmc.output.StatisticsOutput import StatisticsOutput
 from main.mcmc.output.StoreChainOutput import StoreChainOutput
 from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
-from os.path import expanduser
-from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
+from ozone.distribution.OzonePosteriorAverageEngine import \
+    OzonePosteriorAverageEngine
 from pickle import dump
-from russian_roulette.RussianRouletteSubSampling import \
-    RussianRouletteSubSampling
 from tools.Log import Log
 import logging
 import os
+
 
 def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    rr_instance = RussianRouletteSubSampling(threshold=1e-5, block_size=1,
-                                             num_desired_estimates=None)
     num_estimates = 1
     
-    home = expanduser("~")
-    folder = os.sep.join([home, "ozone_initial_test"])
-    cluster_parameters = BatchClusterParameters(foldername=folder,
-                                            memory=4,
-                                            loglevel=logging.DEBUG)
-        
-    computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
-    posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
-                                        rr_instance=rr_instance,
+    computation_engine = SerialComputationEngine()
+    posterior = OzonePosteriorAverageEngine(computation_engine=computation_engine,
                                         num_estimates=num_estimates,
                                         prior=prior)
     
@@ -53,10 +43,11 @@ def main():
     mcmc_params = MCMCParams(start=start, num_iterations=2000)
     chain = MCMCChain(mcmc_sampler, mcmc_params)
     
-#    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
+    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
-    store_chain_output = StoreChainOutput(folder, lag=50)
+    folder = "test"
+    store_chain_output = StoreChainOutput(folder)
     chain.append_mcmc_output(store_chain_output)
     
     loaded = store_chain_output.load_last_stored_chain()
