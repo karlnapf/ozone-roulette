@@ -74,11 +74,13 @@ class OzonePosterior(Distribution):
         accuracy = 1e-5
         eigen_solver = LanczosEigenSolver(op)
         eigen_solver.set_min_eigenvalue(1e-10)
-        eigen_solver.compute()
         op_func = LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
 
         linear_solver.set_iteration_limit(30000)
-        eigen_solver.set_max_iteration_limit(100000)
+        eigen_solver.set_max_iteration_limit(10000)
+        
+        logging.info("Computing Eigenvalues (only largest)")
+        eigen_solver.compute()
         
         trace_sampler = ProbingSampler(op)
         log_det_estimator = LogDetEstimator(trace_sampler, op_func, engine)
