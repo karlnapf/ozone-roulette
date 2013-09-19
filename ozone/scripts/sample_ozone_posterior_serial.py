@@ -36,9 +36,9 @@ def main():
     
     computation_engine = SerialComputationEngine()
     posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
-                                        rr_instance=rr_instance,
-                                        num_estimates=num_estimates,
-                                        prior=prior)
+                                       rr_instance=rr_instance,
+                                       num_estimates=num_estimates,
+                                       prior=prior)
     
     proposal_cov = diag([ 4.000000000000000e-05, 1.072091680000000e+02])
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)

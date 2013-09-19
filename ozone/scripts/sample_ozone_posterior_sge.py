@@ -7,8 +7,8 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 
+from engines.BatchClusterParameters import BatchClusterParameters
 from engines.SGEComputationEngine import SGEComputationEngine
-from jobs.BatchClusterParameters import BatchClusterParameters
 from main.distribution.Gaussian import Gaussian
 from main.mcmc.MCMCChain import MCMCChain
 from main.mcmc.MCMCParams import MCMCParams
@@ -36,10 +36,11 @@ def main():
     
     home = expanduser("~")
     folder = os.sep.join([home, "ozone_initial_test"])
-    pbs_parameters = BatchClusterParameters(foldername=folder,
+    cluster_parameters = BatchClusterParameters(foldername=folder,
+                                            memory=4,
                                             loglevel=logging.DEBUG)
         
-    computation_engine = SGEComputationEngine(pbs_parameters, check_interval=10)
+    computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     posterior = OzonePosteriorRREngine(computation_engine=computation_engine,
                                         rr_instance=rr_instance,
                                         num_estimates=num_estimates,
