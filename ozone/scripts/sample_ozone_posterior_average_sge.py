@@ -33,7 +33,10 @@ def main():
     
     home = expanduser("~")
     folder = os.sep.join([home, "ozone_initial_test"])
+    
+    # cluster admin set project jump for me to exclusively allocate nodes
     parameter_prefix="#$ -P jump"
+    
     cluster_parameters = BatchClusterParameters(foldername=folder,
                                             memory=4,
                                             loglevel=logging.DEBUG,
