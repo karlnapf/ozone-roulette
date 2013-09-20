@@ -35,7 +35,7 @@ def main():
     folder = os.sep.join([home, "sample_ozone_posterior_average_sge"])
     
     # cluster admin set project jump for me to exclusively allocate nodes
-    parameter_prefix="#$ -P jump"
+    parameter_prefix = "#$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
                                             memory=4,
@@ -48,7 +48,7 @@ def main():
                                         num_estimates=num_estimates,
                                         prior=prior)
     
-    posterior.logdet_method="shogun_estimate"
+    posterior.logdet_method = "shogun_estimate"
     
     proposal_cov = diag([ 4.000000000000000e-05, 1.072091680000000e+02])
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)
