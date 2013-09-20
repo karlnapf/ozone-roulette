@@ -31,7 +31,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 10
+    num_estimates = 100
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
@@ -47,7 +47,7 @@ def main():
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     
-    rr_instance = RussianRoulette(1e-5, block_size=2)
+    rr_instance = RussianRoulette(1e-5, block_size=10)
     
     posterior = OzonePosteriorRREngine(rr_instance=rr_instance,
                                        computation_engine=computation_engine,
@@ -60,7 +60,7 @@ def main():
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)
     
     start = asarray([-11.35, -13.1])
-    mcmc_params = MCMCParams(start=start, num_iterations=2000)
+    mcmc_params = MCMCParams(start=start, num_iterations=200)
     chain = MCMCChain(mcmc_sampler, mcmc_params)
     
 #    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
