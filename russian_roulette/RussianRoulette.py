@@ -15,7 +15,7 @@ import logging
 class RussianRoulette(object):
     def __init__(self, threshold, block_size=1):
         self.threshold = threshold
-        self.group_size = block_size
+        self.block_size = block_size
 
     @abstractmethod
     def get_estimate(self, estimates, index):
