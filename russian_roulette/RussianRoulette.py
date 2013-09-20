@@ -24,11 +24,11 @@ class RussianRoulette(object):
         
         # if there are enough samples, use them, sub-sample if not
         if stop_idx < len(estimates):
-            logging.info("Averaging over %d samples from index %d to %d" % 
+            logging.debug("Averaging over %d samples from index %d to %d" % 
                          (self.block_size, start_idx, stop_idx))
             indices = arange(start_idx, stop_idx)
         else:
-            logging.info("Averaging over a random subset of %d samples" % 
+            logging.debug("Averaging over a random subset of %d samples" % 
                          self.block_size)
             
             indices = permutation(len(estimates))[:self.block_size]
