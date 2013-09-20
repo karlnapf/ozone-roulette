@@ -51,7 +51,7 @@ class RussianRoulette(object):
         
         logging.info("Using %f as lower bound on estimates" % bound)
         logging.info("Computing product of E=%d RR estimates" % E)
-        logging.info("Std-deviation after scaling is" % std(estimates))
+        logging.info("Std-deviation after scaling is %f" % std(estimates))
         
         # index for iterating through the used estimates
         # (might be averaged, so might be lower than the number of available estimates
