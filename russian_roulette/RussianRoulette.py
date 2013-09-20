@@ -23,7 +23,7 @@ class RussianRoulette(object):
         stop_idx = index * self.block_size + self.block_size
         
         # if there are enough samples, use them, sub-sample if not
-        if stop_idx < len(estimates):
+        if stop_idx <= len(estimates):
             logging.debug("Averaging over %d samples from index %d to %d" % 
                          (self.block_size, start_idx, stop_idx))
             indices = arange(start_idx, stop_idx)

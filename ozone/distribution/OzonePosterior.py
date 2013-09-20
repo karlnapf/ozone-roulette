@@ -32,6 +32,7 @@ class OzonePosterior(Distribution):
         self.solve_method = solve_method
         
         LogDetEstimator().io.set_loglevel(shogun_loglevel)
+        LogDetEstimator().io.set_location_info(1)
         
     def set_log_det_method(self, logdet_method):
         self.logdet_method = logdet_method    
