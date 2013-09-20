@@ -18,6 +18,7 @@ class OzonePosteriorAverage(OzonePosterior):
         
     def log_likelihood(self, tau, kappa):
         logging.debug("Entering")
+        logging.info("Computing %d likelihood estimates" % self.num_estimates)
         estimates = self.precompute_likelihood_estimates(tau, kappa)
         result = mean(estimates)
         logging.info("Average of %d likelihood estimates is %d" % 
@@ -27,7 +28,6 @@ class OzonePosteriorAverage(OzonePosterior):
     
     def precompute_likelihood_estimates(self, tau, kappa):
         logging.debug("Entering")
-        logging.info("Computing %d likelihood estimates" % self.num_estimates)
         estimates = asarray([OzonePosterior.log_likelihood(self, tau, kappa) for _ in range(self.num_estimates)])
         logging.debug("Leaving")
         return estimates
