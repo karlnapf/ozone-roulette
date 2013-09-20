@@ -21,7 +21,7 @@ class OzonePosteriorRREngine(OzonePosteriorAverageEngine):
         estimates = self.precompute_likelihood_estimates(tau, kappa)
         
         if var(estimates) > 0:
-            logging.info("Performing exponential Russian Roulette on %d precomputed samples" %
+            logging.info("Performing exponential Russian Roulette on %d precomputed samples" % 
                          self.num_estimates)
             rr_ified = self.rr_instance.exponential(estimates)
             return rr_ified
