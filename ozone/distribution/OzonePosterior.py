@@ -24,12 +24,14 @@ import os
 
 class OzonePosterior(Distribution):
     def __init__(self, prior=None, logdet_method="shogun_exact",
-                 solve_method="shogun"):
+                 solve_method="shogun", shogun_loglevel=2):
         Distribution.__init__(self, dimension=2)
         
         self.prior = prior
         self.logdet_method = logdet_method
         self.solve_method = solve_method
+        
+        LogDetEstimator().io.set_loglevel(shogun_loglevel)
         
     def set_log_det_method(self, logdet_method):
         self.logdet_method = logdet_method    
