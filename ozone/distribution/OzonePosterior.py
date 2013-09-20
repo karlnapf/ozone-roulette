@@ -12,6 +12,7 @@ from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
     RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
     Statistics
 from numpy.ma.core import shape, log, mean
+from numpy.random import randn
 from os.path import expanduser
 from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
@@ -40,6 +41,13 @@ class OzonePosterior(Distribution):
     def log_det_shogun_exact(Q):
         logging.debug("Entering")
         logdet = Statistics.log_det(csc_matrix(Q))
+        logging.debug("Leaving")
+        return logdet
+    
+    @staticmethod
+    def log_det_shogun_exact_plus_noise(Q):
+        logging.debug("Entering")
+        logdet = Statistics.log_det(csc_matrix(Q)) + randn()
         logging.debug("Leaving")
         return logdet
     
@@ -113,6 +121,8 @@ class OzonePosterior(Distribution):
             return OzonePosterior.log_det_estimate_shogun(Q)
         elif self.logdet_method == "shogun_exact":
             return OzonePosterior.log_det_shogun_exact(Q)
+        elif self.logdet_method == "shogun_exact_plus_noise":
+            return OzonePosterior.log_det_shogun_exact_plus_noise(Q)
         else:
             raise ValueError("Log-det method unknown")
         
