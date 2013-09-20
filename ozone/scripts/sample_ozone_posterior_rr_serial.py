@@ -18,8 +18,6 @@ from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
 from os.path import expanduser
-from ozone.distribution.OzonePosteriorAverageEngine import \
-    OzonePosteriorAverageEngine
 from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRoulette import RussianRoulette
@@ -31,7 +29,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 5
+    num_estimates = 3
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_serial"])
