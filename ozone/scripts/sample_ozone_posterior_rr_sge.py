@@ -54,7 +54,7 @@ def main():
                                        num_estimates=num_estimates,
                                        prior=prior)
     
-    posterior.logdet_method = "shogun_exact_plus_noise"
+    posterior.logdet_method = "shogun_estimate"
     
     proposal_cov = diag([ 4.000000000000000e-05, 1.072091680000000e+02])
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)
