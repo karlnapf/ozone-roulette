@@ -46,7 +46,7 @@ class RussianRoulette(object):
         
 
         # find an integer close to the mean of the transformed estimates and divide
-        E = max(int(round(mean(estimates))), 1)
+        E = max(int(round(abs(mean(estimates)))), 1)
         estimates = estimates / E
         
         logging.info("Using %f as lower bound on estimates" % bound)
