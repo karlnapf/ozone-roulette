@@ -43,7 +43,7 @@ def main():
                                             memory=4,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
-                                            max_walltime=36000)
+                                            max_walltime=99*60*60)
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     

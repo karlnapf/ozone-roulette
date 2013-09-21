@@ -88,8 +88,8 @@ class OzonePosterior(Distribution):
         op_func = LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
 
         # limit computation time
-        linear_solver.set_iteration_limit(10000)
-        eigen_solver.set_max_iteration_limit(10000)
+        linear_solver.set_iteration_limit(5000)
+        eigen_solver.set_max_iteration_limit(1000)
         
         logging.info("Computing Eigenvalues (only largest)")
         eigen_solver.compute()
