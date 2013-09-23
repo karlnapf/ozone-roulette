@@ -23,6 +23,8 @@ import os
 # from scikits.sparse.cholmod import cholesky
 
 class OzonePosterior(Distribution):
+    ridge = 1
+    
     def __init__(self, prior=None, logdet_method="shogun_exact",
                  solve_method="shogun", shogun_loglevel=2):
         Distribution.__init__(self, dimension=2)
@@ -82,13 +84,13 @@ class OzonePosterior(Distribution):
         op = RealSparseMatrixOperator(csc_matrix(Q))
         engine = SerialComputationEngine()
         linear_solver = CGMShiftedFamilySolver()
-        accuracy = 1e-5
+        accuracy = 1e-3
         eigen_solver = LanczosEigenSolver(op)
-        eigen_solver.set_min_eigenvalue(1e-10)
+        eigen_solver.set_min_eigenvalue(OzonePosterior.ridge)
         op_func = LogRationalApproximationCGM(op, engine, eigen_solver, linear_solver, accuracy)
 
         # limit computation time
-        linear_solver.set_iteration_limit(5000)
+        linear_solver.set_iteration_limit(1000)
         eigen_solver.set_max_iteration_limit(1000)
         
         logging.info("Computing Eigenvalues (only largest)")
@@ -116,7 +118,7 @@ class OzonePosterior(Distribution):
         C0 = loadmat(folder + "C0.mat")["C0"]
         
         Q = GiCG + 2 * (kappa ** 2) * G + (kappa ** 4) * C0
-        return Q + eye(Q.shape[0], Q.shape[1]) * 1e-10
+        return Q + eye(Q.shape[0], Q.shape[1]) * OzonePosterior.ridge
     
     def log_det_method(self, Q):
         if self.logdet_method == "scikits":
