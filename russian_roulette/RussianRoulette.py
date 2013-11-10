@@ -89,8 +89,9 @@ class RussianRoulette(object):
                 estimate_idx += 1
                 series_term_idx += 1
                 
-            logging.info("RR estimate %d/%d took %d series terms" % 
-                         (iteration + 1, E, series_term_idx))
+            logging.info("RR estimate %d/%d with threshold %.2f is %.4f and took %d series terms" % 
+                         (iteration + 1, E, self.threshold, samples[iteration], series_term_idx))
+            
         # now put things together. Note that samples contains an unbiased estimate
         # which might be quite small. However, due to the removal of the bound,
         # this will not cause an underflow and we can just take the log.
