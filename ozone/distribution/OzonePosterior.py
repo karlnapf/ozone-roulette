@@ -6,6 +6,7 @@ the Free Software Foundation; either version 3 of the License, or
 
 Written (W) 2013 Heiko Strathmann
 """
+from abc import abstractmethod
 from main.distribution.Distribution import Distribution
 from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
     LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
@@ -164,6 +165,34 @@ class OzonePosterior(Distribution):
                
     def log_likelihood(self, tau, kappa):
         logging.debug("Entering")
+        log_det_part = self.log_likelihood_logdet(tau, kappa)
+        other_part = self.log_likelihood_without_logdet(tau, kappa)
+        
+        log_marignal_lik = log_det_part + other_part
+        
+        logging.debug("Leaving")
+        return log_marignal_lik
+    
+    @abstractmethod
+    def log_likelihood_logdet(self, tau, kappa):
+        logging.debug("Entering")
+        y, A = OzonePosterior.load_ozone_data()
+        AtA = A.T.dot(A)
+        
+        Q = self.create_Q_matrix(kappa)
+        n = len(y)
+        M = Q + tau * AtA
+        
+        logdet1 = self.log_det_method(Q)
+        logdet2 = self.log_det_method(M)
+        
+        log_det_part = 0.5 * logdet1 + 0.5 * n * log(tau) - 0.5 * logdet2
+        
+        logging.debug("Leaving")
+        return log_det_part
+    
+    def log_likelihood_without_logdet(self, tau, kappa):
+        logging.debug("Entering")
         y, A = OzonePosterior.load_ozone_data()
         AtA = A.T.dot(A)
         
@@ -171,26 +200,18 @@ class OzonePosterior(Distribution):
         n = len(y);
         M = Q + tau * AtA;
         
-        logging.info("Computing log-determinants")
-        logdet1 = self.log_det_method(Q)
-        logdet2 = self.log_det_method(M)
-        
-        first = 0.5 * logdet1 + 0.5 * n * log(tau) - 0.5 * logdet2
-        
         second_a = -0.5 * tau * (y.T.dot(y))
         
-        logging.info("Computing rest of likelihood")
         second_b = A.T.dot(y)
         second_b = self.solve_sparse_linear_system(M, second_b)
         second_b = A.dot(second_b)
         second_b = y.T.dot(second_b)
         second_b = 0.5 * (tau ** 2) * second_b
         
-        log_det_part = first
         quadratic_part = second_a + second_b
         const_part = -0.5 * n * log(2 * pi)
         
-        log_marignal_lik = const_part + log_det_part + quadratic_part
+        result = const_part + quadratic_part
         
         logging.debug("Leaving")
-        return log_marignal_lik
+        return result

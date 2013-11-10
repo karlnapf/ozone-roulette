@@ -8,12 +8,19 @@ Written (W) 2013 Heiko Strathmann
 """
 from ozone.jobs.OzoneJob import OzoneJob
 from results.ScalarResult import ScalarResult
+import logging
 
-class OzoneLikelihoodJob(OzoneJob):
+class OzoneLogDetJob(OzoneJob):
     def __init__(self, aggregator, ozone_posterior, tau, kappa):
-        OzoneJob.__init__(self, aggregator, ozone_posterior, tau, kappa)
-        
+        OzoneJob.__init__(self, ozone_posterior, tau, kappa)
+    
     def compute(self):
-        result = self.ozone_posterior.log_likelihood(self.tau, self.kappa)
-        result = ScalarResult(result)
+        logging.debug("Entering")
+        
+        lik_wihtout_logdet = \
+        self.ozone_posterior.log_likelihood_without_logdet(self.tau, self.kappa)
+                
+        result = ScalarResult(lik_wihtout_logdet)
         self.aggregator.submit_result(result)
+        
+        logging.debug("Leaving")
