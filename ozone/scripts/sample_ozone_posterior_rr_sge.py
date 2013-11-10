@@ -47,7 +47,7 @@ def main():
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     
-    rr_instance = RussianRoulette(1e-5, block_size=10)
+    rr_instance = RussianRoulette(1e-3, block_size=10)
     
     posterior = OzonePosteriorRREngine(rr_instance=rr_instance,
                                        computation_engine=computation_engine,
