@@ -11,7 +11,7 @@ from ozone.jobs.OzoneJob import OzoneJob
 from results.ScalarResult import ScalarResult
 import logging
 
-class OzoneLikelihoodWithoutLogDetJob(OzoneJob):
+class OzoneLogDetJob(OzoneJob):
     def __init__(self, aggregator, ozone_posterior, tau, kappa, matrix_type):
         OzoneJob.__init__(self, aggregator, ozone_posterior, tau, kappa)
         
@@ -21,17 +21,17 @@ class OzoneLikelihoodWithoutLogDetJob(OzoneJob):
         logging.debug("Entering")
         
         # needed for both matrices
-        Q = self.create_Q_matrix(self.kappa);
+        Q = self.ozone_posterior.create_Q_matrix(self.kappa);
         
         if self.matrix_type == "Q":
             logging.info("Matrix type Q")
-            logdet = self.ozone_posterior.logdet_method(Q)
+            logdet = self.ozone_posterior.log_det_method(Q)
         elif self.matrix_type == "M":
             logging.info("Matrix type M")
             _, A = OzonePosterior.load_ozone_data()
             AtA = A.T.dot(A)
             M = Q + self.tau * AtA;
-            logdet = self.ozone_posterior.logdet_method(M)
+            logdet = self.ozone_posterior.log_det_method(M)
         else:
             raise ValueError("Unknown matrix type: %s" % self.matrix_type)
         

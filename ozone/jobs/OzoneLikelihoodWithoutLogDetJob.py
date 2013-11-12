@@ -10,9 +10,9 @@ from ozone.jobs.OzoneJob import OzoneJob
 from results.ScalarResult import ScalarResult
 import logging
 
-class OzoneLogDetJob(OzoneJob):
+class OzoneLikelihoodWithoutLogDetJob(OzoneJob):
     def __init__(self, aggregator, ozone_posterior, tau, kappa):
-        OzoneJob.__init__(self, ozone_posterior, tau, kappa)
+        OzoneJob.__init__(self, aggregator, ozone_posterior, tau, kappa)
     
     def compute(self):
         logging.debug("Entering")

@@ -66,7 +66,7 @@ def main():
 #    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
-    store_chain_output = StoreChainOutput(folder, lag=50)
+    store_chain_output = StoreChainOutput(folder, lag=1)
     chain.append_mcmc_output(store_chain_output)
     
     loaded = store_chain_output.load_last_stored_chain()

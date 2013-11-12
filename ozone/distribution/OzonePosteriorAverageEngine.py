@@ -10,8 +10,9 @@ from aggregators.ScalarResultAggregator import ScalarResultAggregator
 from numpy.ma.core import log, zeros
 from ozone.distribution.OzonePosterior import OzonePosterior
 from ozone.distribution.OzonePosteriorAverage import OzonePosteriorAverage
-from ozone.jobs.OzoneLikelihoodWithoutLogDetJob import OzoneLogDetJob
-from ozone.jobs.OzoneLogDetJob import OzoneLikelihoodWithoutLogDetJob
+from ozone.jobs.OzoneLikelihoodWithoutLogDetJob import \
+    OzoneLikelihoodWithoutLogDetJob
+from ozone.jobs.OzoneLogDetJob import OzoneLogDetJob
 import logging
 
 class OzonePosteriorAverageEngine(OzonePosteriorAverage):
@@ -33,7 +34,7 @@ class OzonePosteriorAverageEngine(OzonePosteriorAverage):
         aggregators_M = []
         for _ in range(self.num_estimates):
             job = OzoneLogDetJob(ScalarResultAggregator(), self, tau, kappa, "M")
-            aggregators_Q.append(self.computation_engine.submit_job(job))
+            aggregators_M.append(self.computation_engine.submit_job(job))
         
         # submit job for remainder of likelihood
         job = OzoneLikelihoodWithoutLogDetJob(ScalarResultAggregator(), self, tau, kappa)
@@ -44,13 +45,11 @@ class OzonePosteriorAverageEngine(OzonePosteriorAverage):
         
         # collect results from all aggregators
         log_dets_Q = zeros(self.num_estimates)
-        for i in range(self.num_estimates):
-            aggregators_Q[i].finalize()
-            log_dets_Q[i]=aggregators_Q[i].get_final_result().result
-            
         log_dets_M = zeros(self.num_estimates)
         for i in range(self.num_estimates):
+            aggregators_Q[i].finalize()
             aggregators_M[i].finalize()
+            log_dets_Q[i]=aggregators_Q[i].get_final_result().result
             log_dets_M[i]=aggregators_M[i].get_final_result().result
             
         aggregator_remainder.finalize()
@@ -64,5 +63,5 @@ class OzonePosteriorAverageEngine(OzonePosteriorAverage):
         log_det_parts = 0.5 * log_dets_Q + 0.5 * n * log(tau) - 0.5 * log_dets_M
         estimates = log_det_parts + result_remainder
         
-        return estimates
         logging.debug("Leaving")
+        return estimates

@@ -6,7 +6,6 @@ the Free Software Foundation; either version 3 of the License, or
 
 Written (W) 2013 Heiko Strathmann
 """
-from abc import abstractmethod
 from main.distribution.Distribution import Distribution
 from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
     LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
@@ -26,19 +25,19 @@ import os
 class OzonePosterior(Distribution):
     ridge = 1
     
-    def __init__(self, prior=None, logdet_method="shogun_exact",
+    def __init__(self, prior=None, logdet_alg="shogun_exact",
                  solve_method="shogun", shogun_loglevel=2):
         Distribution.__init__(self, dimension=2)
         
         self.prior = prior
-        self.logdet_method = logdet_method
+        self.logdet_alg = logdet_alg
         self.solve_method = solve_method
         
         LogDetEstimator().io.set_loglevel(shogun_loglevel)
         LogDetEstimator().io.set_location_info(1)
         
-    def set_log_det_method(self, logdet_method):
-        self.logdet_method = logdet_method    
+    def set_log_det_alg(self, logdet_alg):
+        self.logdet_alg = logdet_alg    
         
     def set_solve_method(self, solve_method):
         self.solve_method = solve_method    
@@ -122,11 +121,11 @@ class OzonePosterior(Distribution):
         return Q + eye(Q.shape[0], Q.shape[1]) * OzonePosterior.ridge
     
     def log_det_method(self, Q):
-        if self.logdet_method == "scikits":
+        if self.logdet_alg == "scikits":
             return OzonePosterior.log_det_scikits(Q)
-        elif self.logdet_method == "shogun_estimate":
+        elif self.logdet_alg == "shogun_estimate":
             return OzonePosterior.log_det_estimate_shogun(Q)
-        elif self.logdet_method == "shogun_exact":
+        elif self.logdet_alg == "shogun_exact":
             return OzonePosterior.log_det_shogun_exact(Q)
         elif self.logdet_method == "shogun_exact_plus_noise":
             return OzonePosterior.log_det_shogun_exact_plus_noise(Q)
@@ -173,7 +172,6 @@ class OzonePosterior(Distribution):
         logging.debug("Leaving")
         return log_marignal_lik
     
-    @abstractmethod
     def log_likelihood_logdet(self, tau, kappa):
         logging.debug("Entering")
         y, A = OzonePosterior.load_ozone_data()

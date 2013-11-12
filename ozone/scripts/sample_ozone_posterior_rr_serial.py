@@ -7,8 +7,6 @@ the Free Software Foundation; either version 3 of the License, or
 Written (W) 2013 Heiko Strathmann
 """
 
-from engines.SGEComputationEngine import SGEComputationEngine
-from engines.SerialComputationEngine import SerialComputationEngine
 from main.distribution.Gaussian import Gaussian
 from main.mcmc.MCMCChain import MCMCChain
 from main.mcmc.MCMCParams import MCMCParams
@@ -18,12 +16,15 @@ from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
 from os.path import expanduser
+from ozone.distribution.OzonePosteriorAverageEngine import \
+    OzonePosteriorAverageEngine
 from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
 from russian_roulette.RussianRoulette import RussianRoulette
 from tools.Log import Log
 import logging
 import os
+from engines.SerialComputationEngine import SerialComputationEngine
 
 def main():
     Log.set_loglevel(logging.DEBUG)
@@ -32,11 +33,11 @@ def main():
     num_estimates = 2
     
     home = expanduser("~")
-    folder = os.sep.join([home, "sample_ozone_posterior_rr_serial"])
+    folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
     
     computation_engine = SerialComputationEngine()
     
-    rr_instance = RussianRoulette(1e-5, block_size=1)
+    rr_instance = RussianRoulette(1e-3, block_size=10)
     
     posterior = OzonePosteriorRREngine(rr_instance=rr_instance,
                                        computation_engine=computation_engine,
@@ -49,7 +50,7 @@ def main():
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)
     
     start = asarray([-11.35, -13.1])
-    mcmc_params = MCMCParams(start=start, num_iterations=2000)
+    mcmc_params = MCMCParams(start=start, num_iterations=200)
     chain = MCMCChain(mcmc_sampler, mcmc_params)
     
 #    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
