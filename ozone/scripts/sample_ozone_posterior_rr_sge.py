@@ -31,7 +31,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 100
+    num_estimates = 50 
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
@@ -40,10 +40,10 @@ def main():
     parameter_prefix = "#$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
-                                            memory=4,
+                                            memory=8,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
-                                            max_walltime=99*60*60)
+                                            max_walltime=60*60*24)
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     
@@ -60,7 +60,7 @@ def main():
     mcmc_sampler = StandardMetropolis(posterior, scale=1.0, cov=proposal_cov)
     
     start = asarray([-11.35, -13.1])
-    mcmc_params = MCMCParams(start=start, num_iterations=200)
+    mcmc_params = MCMCParams(start=start, num_iterations=5000)
     chain = MCMCChain(mcmc_sampler, mcmc_params)
     
 #    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
