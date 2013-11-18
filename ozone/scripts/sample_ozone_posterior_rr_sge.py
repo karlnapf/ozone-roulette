@@ -32,7 +32,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 1
+    num_estimates = 50
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
