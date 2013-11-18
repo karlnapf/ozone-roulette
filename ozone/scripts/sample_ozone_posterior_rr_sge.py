@@ -40,7 +40,7 @@ def main():
     parameter_prefix = "#$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
-                                            memory=8,
+                                            memory=4,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
                                             max_walltime=60*60*24)
