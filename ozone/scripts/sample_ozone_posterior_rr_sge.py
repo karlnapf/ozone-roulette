@@ -26,12 +26,13 @@ from russian_roulette.RussianRoulette import RussianRoulette
 from tools.Log import Log
 import logging
 import os
+import time
 
 def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 50
+    num_estimates = 1
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
@@ -43,7 +44,7 @@ def main():
                                             memory=8,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
-                                            max_walltime=60*60*24)
+                                            max_walltime=60*60*24-1)
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     
