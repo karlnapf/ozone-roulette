@@ -31,7 +31,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 50 
+    num_estimates = 25 
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
@@ -40,7 +40,7 @@ def main():
     parameter_prefix = "#$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
-                                            memory=4,
+                                            memory=2,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
                                             max_walltime=60*60*24)
