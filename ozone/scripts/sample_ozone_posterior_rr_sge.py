@@ -32,13 +32,13 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 50
+    num_estimates = 150
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
     
     # cluster admin set project jump for me to exclusively allocate nodes
-    parameter_prefix = "#$ -P jump"
+    parameter_prefix = ""##$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
                                             memory=8,
