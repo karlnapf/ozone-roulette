@@ -51,9 +51,12 @@ class OzonePosteriorAverageEngine(OzonePosteriorAverage):
             aggregators_M[i].finalize()
             log_dets_Q[i]=aggregators_Q[i].get_final_result().result
             log_dets_M[i]=aggregators_M[i].get_final_result().result
+            aggregators_Q[i].clean_up()
+            aggregators_M[i].clean_up()
             
         aggregator_remainder.finalize()
         result_remainder = aggregator_remainder.get_final_result().result
+        aggregator_remainder.clean_up()
             
         # load n since needed for likelihood
         y, _ = OzonePosterior.load_ozone_data()
