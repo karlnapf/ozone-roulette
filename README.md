@@ -21,4 +21,4 @@ python_modular language bindings, which depend on python and numpy
 For sparse Cholesky (can be done with Shogun):
 Python's sparse cholmod package - http://pythonhosted.org/scikits.sparse/cholmod.html
 
-Written (W) 2013 Heiko Strathmann under GPL3
+Written (W) 2013 Heiko Strathmann
