@@ -30,10 +30,10 @@ from matplotlib.pyplot import plot, legend, show, clf
 from numpy.linalg.linalg import norm
 from numpy.ma.core import mean, zeros, arange, cumsum, ones, exp
 from numpy.random import randn
-from russian_roulette.RussianRoulette import RussianRoulette
-from russian_roulette.RussianRouletteSubSampling import \
-    RussianRouletteSubSampling
 import unittest
+
+from russian_roulette.RussianRoulette import RussianRoulette
+
 
 class RussianRouletteTests(unittest.TestCase):
 
