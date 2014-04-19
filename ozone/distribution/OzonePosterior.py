@@ -26,7 +26,7 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the author.
 """
-from main.distribution.Distribution import Distribution
+from kameleon_mcmc.distribution.Distribution import Distribution
 from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
     LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
     RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \

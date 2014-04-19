@@ -27,12 +27,12 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the author.
 """
 
-from main.distribution.Gaussian import Gaussian
-from main.mcmc.MCMCChain import MCMCChain
-from main.mcmc.MCMCParams import MCMCParams
-from main.mcmc.output.StatisticsOutput import StatisticsOutput
-from main.mcmc.output.StoreChainOutput import StoreChainOutput
-from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
+from kameleon_mcmc.distribution.Gaussian import Gaussian
+from kameleon_mcmc.mcmc.MCMCChain import MCMCChain
+from kameleon_mcmc.mcmc.MCMCParams import MCMCParams
+from kameleon_mcmc.mcmc.output.StatisticsOutput import StatisticsOutput
+from kameleon_mcmc.mcmc.output.StoreChainOutput import StoreChainOutput
+from kameleon_mcmc.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
 from os.path import expanduser
