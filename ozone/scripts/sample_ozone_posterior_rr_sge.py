@@ -27,26 +27,25 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the author.
 """
 
-from engines.BatchClusterParameters import BatchClusterParameters
-from engines.SGEComputationEngine import SGEComputationEngine
-from kameleon_mcmc.distribution.Gaussian import Gaussian
-from kameleon_mcmc.mcmc.MCMCChain import MCMCChain
-from kameleon_mcmc.mcmc.MCMCParams import MCMCParams
-from kameleon_mcmc.mcmc.output.StatisticsOutput import StatisticsOutput
-from kameleon_mcmc.mcmc.output.StoreChainOutput import StoreChainOutput
-from kameleon_mcmc.mcmc.samplers.StandardMetropolis import StandardMetropolis
+import logging
 from numpy.lib.twodim_base import diag, eye
 from numpy.ma.core import asarray
+import os
 from os.path import expanduser
-from ozone.distribution.OzonePosteriorAverageEngine import \
-    OzonePosteriorAverageEngine
-from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from pickle import dump
+
+from engines.BatchClusterParameters import BatchClusterParameters
+from engines.SGEComputationEngine import SGEComputationEngine
+from main.distribution.Gaussian import Gaussian
+from main.mcmc.MCMCChain import MCMCChain
+from main.mcmc.MCMCParams import MCMCParams
+from main.mcmc.output.StatisticsOutput import StatisticsOutput
+from main.mcmc.output.StoreChainOutput import StoreChainOutput
+from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
+from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from russian_roulette.RussianRoulette import RussianRoulette
 from tools.Log import Log
-import logging
-import os
-import time
+
 
 def main():
     Log.set_loglevel(logging.DEBUG)
@@ -58,13 +57,13 @@ def main():
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
     
     # cluster admin set project jump for me to exclusively allocate nodes
-    parameter_prefix = ""##$ -P jump"
+    parameter_prefix = ""  # #$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
                                             memory=7.8,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
-                                            max_walltime=60*60*24-1)
+                                            max_walltime=60 * 60 * 24 - 1)
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     

@@ -26,22 +26,24 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the author.
 """
-from kameleon_mcmc.distribution.Distribution import Distribution
-from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
-    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
-    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
-    Statistics
+import logging
 from numpy.ma.core import shape, log, mean
 from numpy.random import randn
+import os
 from os.path import expanduser
 from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
-import logging
-import os
-# from scikits.sparse.cholmod import cholesky
 
+from main.distribution.Distribution import Distribution
+from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
+    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
+    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
+    Statistics
+
+
+# from scikits.sparse.cholmod import cholesky
 class OzonePosterior(Distribution):
     ridge = 1
     
