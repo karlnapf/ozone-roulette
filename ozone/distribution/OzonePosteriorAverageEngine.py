@@ -101,7 +101,7 @@ class OzonePosteriorAverageEngine(OzonePosteriorAverage):
                 logging.info("log-det M: " + aggregators_M[idx].job_name + 
                              ". Result is %f" % log_dets_M[idx])
                 logging.info("log-lik-without-log-det: " + 
-                             aggregator_remainder[idx].job_name + ". Result is %f" % result_remainder[idx])
+                             aggregator_remainder.job_name + ". Result is %f" % result_remainder[idx])
                 
             logging.info("Removing mentioned estimates from list")
             estimates = estimates[abs(estimates) < limit]
