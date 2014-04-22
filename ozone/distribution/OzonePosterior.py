@@ -27,6 +27,10 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the author.
 """
 import logging
+from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
+    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
+    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
+    Statistics
 from numpy.ma.core import shape, log, mean
 from numpy.random import randn
 import os
@@ -36,11 +40,7 @@ from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
 
-from main.distribution.Distribution import Distribution
-from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
-    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
-    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
-    Statistics
+from kameleon_mcmc.distribution.Distribution import Distribution
 
 
 # from scikits.sparse.cholmod import cholesky
