@@ -35,12 +35,12 @@ from os.path import expanduser
 from pickle import dump
 
 from engines.SerialComputationEngine import SerialComputationEngine
-from main.distribution.Gaussian import Gaussian
-from main.mcmc.MCMCChain import MCMCChain
-from main.mcmc.MCMCParams import MCMCParams
-from main.mcmc.output.StatisticsOutput import StatisticsOutput
-from main.mcmc.output.StoreChainOutput import StoreChainOutput
-from main.mcmc.samplers.StandardMetropolis import StandardMetropolis
+from kameleon_mcmc.distribution.Gaussian import Gaussian
+from kameleon_mcmc.mcmc.MCMCChain import MCMCChain
+from kameleon_mcmc.mcmc.MCMCParams import MCMCParams
+from kameleon_mcmc.mcmc.output.StatisticsOutput import StatisticsOutput
+from kameleon_mcmc.mcmc.output.StoreChainOutput import StoreChainOutput
+from kameleon_mcmc.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from russian_roulette.RussianRoulette import RussianRoulette
 from tools.Log import Log
