@@ -51,7 +51,7 @@ def main():
     Log.set_loglevel(logging.DEBUG)
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 350
+    num_estimates = 1000
     
     home = expanduser("~")
     folder = os.sep.join([home, "sample_ozone_posterior_rr_sge"])
@@ -67,7 +67,7 @@ def main():
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     
-    rr_instance = RussianRoulette(1e-3, block_size=100)
+    rr_instance = RussianRoulette(1e-3, block_size=400)
     
     posterior = OzonePosteriorRREngine(rr_instance=rr_instance,
                                        computation_engine=computation_engine,
