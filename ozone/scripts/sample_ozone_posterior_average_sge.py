@@ -57,13 +57,13 @@ def main():
     folder = os.sep.join([home, "sample_ozone_posterior_average_sge"])
     
     # cluster admin set project jump for me to exclusively allocate nodes
-    parameter_prefix = "#$ -P jump"
+    parameter_prefix = ""  # #$ -P jump"
     
     cluster_parameters = BatchClusterParameters(foldername=folder,
-                                            memory=4,
+                                            memory=7.8,
                                             loglevel=logging.DEBUG,
                                             parameter_prefix=parameter_prefix,
-                                            max_walltime=36000)
+                                            max_walltime=60 * 60 * 24 - 1)
         
     computation_engine = SGEComputationEngine(cluster_parameters, check_interval=10)
     posterior = OzonePosteriorAverageEngine(computation_engine=computation_engine,
