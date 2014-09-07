@@ -34,8 +34,9 @@ import os
 from os.path import expanduser
 from pickle import dump
 
-from engines.BatchClusterParameters import BatchClusterParameters
-from engines.SGEComputationEngine import SGEComputationEngine
+from independent_jobs.engines.BatchClusterParameters import BatchClusterParameters
+from independent_jobs.engines.SGEComputationEngine import SGEComputationEngine
+from independent_jobs.tools.Log import Log
 from kameleon_mcmc.distribution.Gaussian import Gaussian
 from kameleon_mcmc.mcmc.MCMCChain import MCMCChain
 from kameleon_mcmc.mcmc.MCMCParams import MCMCParams
@@ -44,7 +45,6 @@ from kameleon_mcmc.mcmc.output.StoreChainOutput import StoreChainOutput
 from kameleon_mcmc.mcmc.samplers.StandardMetropolis import StandardMetropolis
 from ozone.distribution.OzonePosteriorRREngine import OzonePosteriorRREngine
 from russian_roulette.RussianRoulette import RussianRoulette
-from tools.Log import Log
 
 
 def main():

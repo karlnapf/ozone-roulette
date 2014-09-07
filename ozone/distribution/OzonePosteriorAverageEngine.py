@@ -30,7 +30,7 @@ import logging
 from numpy import where
 from numpy.ma.core import log, zeros
 
-from aggregators.ScalarResultAggregator import ScalarResultAggregator
+from independent_jobs.aggregators.ScalarResultAggregator import ScalarResultAggregator
 from ozone.distribution.OzonePosterior import OzonePosterior
 from ozone.distribution.OzonePosteriorAverage import OzonePosteriorAverage
 from ozone.jobs.OzoneLikelihoodWithoutLogDetJob import \

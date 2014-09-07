@@ -33,8 +33,8 @@ from numpy.ma.core import mean, zeros, arange, cumsum, ones, exp
 from numpy.random import randn
 import unittest
 
+from independent_jobs.tools.Log import Log
 from russian_roulette.RussianRoulette import RussianRoulette
-from tools.Log import Log
 
 
 class RussianRouletteTests(unittest.TestCase):
