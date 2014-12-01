@@ -28,6 +28,8 @@ def main():
         engine = SerialComputationEngine()
     else:
         johns_slurm_hack = "#SBATCH --partition=intel-ivy,wrkstn,compute"
+        johns_slurm_hack = "#SBATCH --partition=intel-ivy,compute"
+        
         folder = os.sep + os.sep.join(["nfs", "data3", "ucabhst", modulename])
         batch_parameters = BatchClusterParameters(foldername=folder, max_walltime=60 * 60,
                                                   resubmit_on_timeout=False, memory=3,
