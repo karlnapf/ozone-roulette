@@ -23,7 +23,7 @@ from ozone.distribution.OzonePosteriorAverageEngine import \
 def main():
     Log.set_loglevel(logging.DEBUG)
     
-    modulename = "debiasing_logistic_toy"
+    modulename = "sample_ozone_posterior_average_slurm"
     if not FileSystem.cmd_exists("sbatch"):
         engine = SerialComputationEngine()
     else:
