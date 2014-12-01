@@ -37,7 +37,7 @@ def main():
     
     
     prior = Gaussian(Sigma=eye(2) * 100)
-    num_estimates = 1
+    num_estimates = 100
     
     posterior = OzonePosteriorAverageEngine(computation_engine=engine,
                                         num_estimates=num_estimates,
