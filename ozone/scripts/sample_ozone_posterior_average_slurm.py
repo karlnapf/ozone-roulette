@@ -13,7 +13,6 @@ from independent_jobs.tools.Log import Log
 from kameleon_mcmc.distribution.Gaussian import Gaussian
 from kameleon_mcmc.mcmc.MCMCChain import MCMCChain
 from kameleon_mcmc.mcmc.MCMCParams import MCMCParams
-from kameleon_mcmc.mcmc.output.PlottingOutput import PlottingOutput
 from kameleon_mcmc.mcmc.output.StatisticsOutput import StatisticsOutput
 from kameleon_mcmc.mcmc.output.StoreChainOutput import StoreChainOutput
 from kameleon_mcmc.mcmc.samplers.StandardMetropolis import StandardMetropolis
@@ -52,7 +51,6 @@ def main():
     mcmc_params = MCMCParams(start=start, num_iterations=2000)
     chain = MCMCChain(mcmc_sampler, mcmc_params)
     
-    chain.append_mcmc_output(PlottingOutput(None, plot_from=1, lag=1))
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
     home = expanduser("~")
