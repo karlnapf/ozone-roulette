@@ -54,7 +54,7 @@ def main():
     chain.append_mcmc_output(StatisticsOutput(print_from=1, lag=1))
     
     home = expanduser("~")
-    folder = os.sep.join([home, "sample_ozone_posterior_average_serial"])
+    folder = os.sep.join([home, modulename])
     store_chain_output = StoreChainOutput(folder)
     chain.append_mcmc_output(store_chain_output)
     
