@@ -1,5 +1,5 @@
 
-from numpy.ma.core import asarray, mean
+from numpy.ma.core import asarray, mean, var
 from ozone.distribution.OzonePosterior import OzonePosterior
 import logging
 
@@ -14,8 +14,9 @@ class OzonePosteriorAverage(OzonePosterior):
         logging.info("Computing %d likelihood estimates" % self.num_estimates)
         estimates = self.precompute_likelihood_estimates(tau, kappa)
         result = mean(estimates)
-        logging.info("Average of %d likelihood estimates is %d" % 
-                     (self.num_estimates, result))
+        std_dev = std(estimates)
+        logging.info("Average of %d likelihood estimates is %d +- %f" % 
+                     (self.num_estimates, result, std_dev))
         logging.debug("Leaving")
         return result
     
