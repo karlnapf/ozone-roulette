@@ -1,9 +1,5 @@
 
 import logging
-from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
-    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
-    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
-    Statistics
 from numpy.ma.core import shape, log, mean
 from numpy.random import randn
 import os
@@ -12,6 +8,12 @@ from scipy.constants.constants import pi
 from scipy.io.matlab.mio import loadmat
 from scipy.sparse.construct import eye
 from scipy.sparse.csc import csc_matrix
+from scikits.sparse.cholmod import cholesky
+
+from modshogun import CGMShiftedFamilySolver, DirectSparseLinearSolver, \
+    LanczosEigenSolver, LogDetEstimator, LogRationalApproximationCGM, ProbingSampler, \
+    RealSparseMatrixOperator, RealSparseMatrixOperator, SerialComputationEngine, \
+    Statistics
 
 from kameleon_mcmc.distribution.Distribution import Distribution
 
@@ -53,8 +55,8 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def log_det_scikits(Q):
-#        d = cholesky(csc_matrix(Q)).L().diagonal()
-#        return 2 * sum(log(d))
+        d = cholesky(csc_matrix(Q)).L().diagonal()
+        return 2 * sum(log(d))
         raise Exception("cholmod not installed")
     
     @staticmethod
@@ -68,9 +70,9 @@ class OzonePosterior(Distribution):
     
     @staticmethod
     def solve_sparse_linear_system_scikits(A, b):
-#        factor = cholesky(A)
-#        result = factor.solve_A(b)
-#        return result
+        factor = cholesky(A)
+        result = factor.solve_A(b)
+        return result
         raise Exception("cholmod not installed")
     
     @staticmethod
